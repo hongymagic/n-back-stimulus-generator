@@ -1,0 +1,138 @@
+ <!DOCTYPE html>  <html> <head>   <title>generate.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               generate.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/* vim: set noexpandtab ts=4 sw=4 ai si: */</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Check if given parameters to generate n-back cues are valid. There are number
+of cases to consider here:</p>
+
+<p>Given:
+cues = 10
+N     = 1
+assets = 1
+positions = 1</p>
+
+<p>Then:
+The variance, which is assets * positions = 1 therefore we cannot create a
+set of cues that will be false (except for the first one).</p>
+
+<p>Note:
+In above case: N = variances</p>
+
+<p>Given:
+cues = 10
+N     = 2
+assets = 1
+positions = 2</p>
+
+<p>Then:
+variance = 2</p>
+
+<p>Note:
+N = variance</p>
+
+<p>TODO: THIS VALIDATION IS NOT COMPLETE</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">valid</span> <span class="p">(</span><span class="nx">cues</span><span class="p">,</span> <span class="nx">N</span><span class="p">,</span> <span class="nx">matches</span><span class="p">,</span> <span class="nx">assets</span><span class="p">,</span> <span class="nx">positions</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">variance</span> <span class="o">=</span> <span class="nx">positions</span> <span class="o">*</span> <span class="nx">assets</span><span class="p">;</span>
+	<span class="k">return</span> <span class="nx">variance</span> <span class="o">&gt;=</span> <span class="nx">N</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kd">function</span> <span class="nx">random</span> <span class="p">(</span><span class="nx">variance</span><span class="p">,</span> <span class="nx">except</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">except</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">variance</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">except</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">variance</span> <span class="o">&lt;</span> <span class="nx">except</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;Cannot generate a random number for given (variance, except): (&#39;</span> <span class="o">+</span> <span class="nx">variance</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nx">except</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">variances</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+		<span class="nx">random</span><span class="p">;</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="nx">index</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">index</span> <span class="o">&lt;=</span> <span class="nx">variance</span><span class="p">;</span> <span class="nx">index</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">except</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">index</span> <span class="o">===</span> <span class="nx">except</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+
+		<span class="nx">variances</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">index</span><span class="p">);</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Generate a random index to choose from variances array</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">random</span> <span class="o">=</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100000</span> <span class="o">|</span> <span class="mi">0</span><span class="p">)</span> <span class="o">%</span> <span class="nx">variances</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+	<span class="k">return</span> <span class="nx">variances</span><span class="p">[</span><span class="nx">random</span><span class="p">];</span>
+<span class="p">}</span>
+
+
+<span class="kd">function</span> <span class="nx">next</span> <span class="p">(</span><span class="nx">set</span><span class="p">,</span> <span class="nx">N</span><span class="p">,</span> <span class="nx">match</span><span class="p">,</span> <span class="nx">assets</span><span class="p">,</span> <span class="nx">positions</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">variance</span> <span class="o">=</span> <span class="nx">assets</span> <span class="o">*</span> <span class="nx">positions</span><span class="p">,</span>
+		<span class="nx">current</span> <span class="o">=</span> <span class="nx">set</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">&lt;</span> <span class="nx">N</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">random</span> <span class="p">(</span><span class="nx">variance</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">set</span><span class="p">[</span><span class="nx">current</span> <span class="o">-</span> <span class="nx">N</span><span class="p">];</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">random</span> <span class="p">(</span><span class="nx">variance</span><span class="p">,</span> <span class="nx">set</span><span class="p">[</span><span class="nx">current</span> <span class="o">-</span> <span class="nx">N</span><span class="p">]);</span>
+<span class="p">}</span>
+
+
+<span class="kd">function</span> <span class="nx">generate</span> <span class="p">(</span><span class="nx">cues</span><span class="p">,</span> <span class="nx">N</span><span class="p">,</span> <span class="nx">matches</span><span class="p">,</span> <span class="nx">assets</span><span class="p">,</span> <span class="nx">positions</span><span class="p">)</span> <span class="p">{</span>
+	<span class="cm">/*</span>
+<span class="cm">	if (!valid(cues, N, matches, assets, positions)) {</span>
+<span class="cm">		throw new Error(&#39;Cannot generate &#39; + N + &#39;-Back cues based on parameters given.&#39;);</span>
+<span class="cm">	}</span>
+<span class="cm">	*/</span>
+
+	<span class="kd">var</span> <span class="nx">set</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">need</span> <span class="o">=</span> <span class="nx">matches</span><span class="p">,</span>
+		<span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+	<span class="k">while</span> <span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="nx">cues</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>TODO: need to tell it to match something</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="k">if</span> <span class="p">(</span><span class="nx">set</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;=</span> <span class="nx">N</span> <span class="o">&amp;&amp;</span> <span class="nx">need</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">match</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="nx">need</span><span class="o">--</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="nx">set</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">next</span><span class="p">(</span><span class="nx">set</span><span class="p">,</span> <span class="nx">N</span><span class="p">,</span> <span class="nx">match</span><span class="p">,</span> <span class="nx">assets</span><span class="p">,</span> <span class="nx">positions</span><span class="p">));</span>
+		<span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">set</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+
+
+
+<span class="kd">function</span> <span class="nx">test_random</span> <span class="p">(</span><span class="nx">variance</span><span class="p">,</span> <span class="nx">except</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">sample</span> <span class="o">=</span> <span class="nx">random</span><span class="p">(</span><span class="nx">variance</span><span class="p">,</span> <span class="nx">except</span><span class="p">);</span>
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">variance</span><span class="p">,</span> <span class="nx">except</span><span class="p">,</span> <span class="nx">sample</span><span class="p">,</span> <span class="nx">sample</span> <span class="o">===</span> <span class="nx">except</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">test_random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">);</span>
+<span class="nx">test_random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">);</span>
+<span class="nx">test_random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">);</span>
+
+<span class="nx">test_random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">test_random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="nx">test_random</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">test_generate</span> <span class="p">(</span><span class="nx">cues</span><span class="p">,</span> <span class="nx">N</span><span class="p">,</span> <span class="nx">matches</span><span class="p">,</span> <span class="nx">assets</span><span class="p">,</span> <span class="nx">positions</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">try</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">set</span> <span class="o">=</span> <span class="nx">generate</span><span class="p">(</span><span class="nx">cues</span><span class="p">,</span> <span class="nx">N</span><span class="p">,</span> <span class="nx">matches</span><span class="p">,</span> <span class="nx">assets</span><span class="p">,</span> <span class="nx">positions</span><span class="p">),</span>
+			<span class="nx">index</span><span class="p">,</span> <span class="nx">length</span><span class="p">,</span> <span class="nx">current</span><span class="p">,</span> <span class="nx">sibling</span><span class="p">,</span> <span class="nx">matching</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Go through the generated set and calculate the number of matching
+cues.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="k">for</span> <span class="p">(</span><span class="nx">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">length</span> <span class="o">=</span> <span class="nx">set</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">index</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">index</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">&gt;=</span> <span class="nx">N</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">current</span> <span class="o">=</span> <span class="nx">set</span><span class="p">[</span><span class="nx">index</span><span class="p">];</span>
+				<span class="nx">sibling</span> <span class="o">=</span> <span class="nx">set</span><span class="p">[</span><span class="nx">index</span> <span class="o">-</span> <span class="nx">N</span><span class="p">];</span>
+
+				<span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">===</span> <span class="nx">sibling</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">matching</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">N</span><span class="p">,</span> <span class="nx">set</span><span class="p">,</span> <span class="nx">matches</span> <span class="o">===</span> <span class="nx">matching</span><span class="p">,</span> <span class="nx">matches</span><span class="p">,</span> <span class="nx">matching</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">test_generate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">test_generate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">test_generate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span>
+
+<span class="nx">test_generate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">test_generate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">test_generate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html>  
