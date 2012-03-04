@@ -31,12 +31,20 @@
 // TODO: THIS VALIDATION IS NOT COMPLETE
 //
 function valid (cues, N, matches, assets, positions) {
-	var variance = positions * assets;
-	return variance >= N;
+
+	var variance = positions * assets,
+		playback = cues - N;
+
+	// Number of matches must be greater the number of playback cues
+	if (playback < N) return false;
+
+	return true;
+
 }
 
 
 function random (variance, except) {
+
 	if (except != null && (variance === 1 || except < 1 || variance < except)) {
 		throw new Error('Cannot generate a random number for given (variance, except): (' + variance + ', ' + except + ')');
 	}
@@ -54,10 +62,12 @@ function random (variance, except) {
 	// Generate a random index to choose from variances array
 	random = (Math.random() * 100000 | 0) % variances.length;
 	return variances[random];
+
 }
 
 
 function next (set, N, match, assets, positions) {
+
 	var variance = assets * positions,
 		current = set.length;
 
@@ -70,15 +80,15 @@ function next (set, N, match, assets, positions) {
 	}
 
 	return random (variance, set[current - N]);
+
 }
 
 
 function generate (cues, N, matches, assets, positions) {
-	/*
+
 	if (!valid(cues, N, matches, assets, positions)) {
-		throw new Error('Cannot generate ' + N + '-Back cues based on parameters given.');
+		//throw new Error('Cannot generate ' + N + '-Back cues based on parameters given.', arguments);
 	}
-	*/
 
 	var set = [],
 		need = matches,
@@ -86,6 +96,10 @@ function generate (cues, N, matches, assets, positions) {
 
 	while (set.length < cues) {
 		// TODO: need to tell it to match something
+		// Presumably, we need to replace this greedy logic with a distribution
+		// function of some sort. A random distribution function would work well
+		// whilst uniform distribution wouldn't. If uniform distribution is used
+		// the pattern of matching cues will be too linear and predictable.
 		if (set.length >= N && need > 0) {
 			match = true;
 			need--;
@@ -96,26 +110,13 @@ function generate (cues, N, matches, assets, positions) {
 	}
 
 	return set;
+
 };
 
 
 
-
-
-function test_random (variance, except) {
-	var sample = random(variance, except);
-	console.log(variance, except, sample, sample === except);
-}
-
-test_random(3, undefined);
-test_random(3, undefined);
-test_random(3, undefined);
-
-test_random(3, 1);
-test_random(3, 2);
-test_random(3, 3);
-
 function test_generate (cues, N, matches, assets, positions) {
+
 	try {
 		var set = generate(cues, N, matches, assets, positions),
 			index, length, current, sibling, matching = 0;
@@ -134,12 +135,15 @@ function test_generate (cues, N, matches, assets, positions) {
 			}
 		}
 
+		// N, [cues...], verified, matches, found
 		console.log(N, set, matches === matching, matches, matching);
 	} catch (error) {
 		console.error(error);
 	}
+
 }
 
+console.log('N | SET | VERIFIED | MATCHES | FOUND');
 test_generate(10, 1, 0, 2, 1);
 test_generate(10, 5, 0, 3, 1);
 test_generate(10, 7, 0, 4, 9);
@@ -147,3 +151,7 @@ test_generate(10, 7, 0, 4, 9);
 test_generate(10, 1, 2, 2, 1);
 test_generate(10, 5, 4, 3, 1);
 test_generate(10, 7, 5, 4, 9);
+
+test_generate(20, 1, 2, 2, 1);
+test_generate(20, 5, 4, 3, 1);
+test_generate(20, 7, 5, 4, 9);
